@@ -1,0 +1,12 @@
+services:
+  similar-products-service:
+    image: javierdelgadocruces/mca-similar-products:0.1.0-SNAPSHOT
+    ports:
+      - "5000:5000"
+    networks:
+      - backenddevtest_default
+    environment:
+      PRODUCT_SERVICE_URL: http://simulado:80
+networks:
+  backenddevtest_default:
+    external: true

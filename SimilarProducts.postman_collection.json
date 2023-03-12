@@ -1,0 +1,30 @@
+{
+	"info": {
+		"_postman_id": "34c48ecd-5023-4440-81de-c6c701b4a4f3",
+		"name": "SimilarProducts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetSimilarProductDetails",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/product/1/similar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"product",
+						"1",
+						"similar"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
