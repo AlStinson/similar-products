@@ -2,6 +2,8 @@ package com.javierdelgado.similarproducts.controllers;
 
 import com.javierdelgado.similarproducts.models.ProductDetail;
 import com.javierdelgado.similarproducts.services.SimilarProductsService;
+import io.github.resilience4j.bulkhead.BulkheadFullException;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -42,6 +45,7 @@ public class SimilarProductsController {
      * <a href="https://github.com/dalogax/backendDevTest/blob/main/similarProducts.yaml">similar products specification</a>
      */
     @GetMapping("/product/{productId}/similar")
+    @Bulkhead(name = "get-similar-products")
     public ResponseEntity<List<ProductDetail>> getSimilarProducts(@NotNull @PathVariable("productId") String productId) {
         logger.debug("Request with id={}", productId);
         List<ProductDetail> similarProductDetails = similarProductsService.getSimilarProducts(productId);
@@ -64,5 +68,25 @@ public class SimilarProductsController {
     public String handleConstraintViolationException(ConstraintViolationException e) {
         logger.debug("Bad request. Reason: {}", e.getMessage());
         return e.getMessage();
+    }
+
+    /**
+     * Return a 503 Service Unavailable in case of BulkheadFullException is thrown.
+     *
+     * @param e the exception that has been thrown
+     * @return the message of the exception
+     */
+    @ExceptionHandler(BulkheadFullException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public String handleBulkheadFullExceptions(Exception e) {
+        return e.getMessage();
+    }
+
+    /**
+     * Handle IOException (for example, if client does not wait for response)
+     */
+    @ExceptionHandler(IOException.class)
+    public void handleIOException() {
+        // Handle IOException
     }
 }

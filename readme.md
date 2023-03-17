@@ -7,7 +7,7 @@ one.
 
 ## Setup
 
-The setup need [docker](https://www.docker.com/)
+The setup needs [docker](https://www.docker.com/)
 
 First you have to start the mock APIs and other infrastructure needed. In order to achieve that you have to
 clone/download the [backendDevTest repository](https://github.com/dalogax/backendDevTest), navigate to that folder with
@@ -75,3 +75,21 @@ configuration is 2000 (2 seconds) for both values.
 Cache is managed by [Caffeine](https://github.com/ben-manes/caffeine), so again, all its configurations can be applied.
 Default configuration is ```spring.cache.caffeine.spec=expireAfterWrite=5s```, so the only default configuration is that
 cache entries expire 5 seconds after they are registered.
+
+Bulkhead for the service is managed by [Resilience4j](https://resilience4j.readme.io/docs). Default configuration
+is ```resilience4j.bulkhead.instances.get-similar-products.maxConcurrentCalls=50``` and ```
+resilience4j.bulkhead.instances.get-similar-products.maxWaitDuration=15s```.
+
+# Changelog
+
+## 0.1.1-SNAPSHOT
+
+- Bulkhead added to the service via resilience4j
+- Service is now initialized right after the application is up (instead of during the first request)
+- Default connect timeout and read timeout increased to 60 seconds (from 2 seconds)
+- Default log level for com.javierdelgado.similarproducts removed (from DEBUG)
+- Changelog added to readme.md
+
+## 0.1.0-SNAPSHOT
+
+- First version
